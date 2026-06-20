@@ -136,7 +136,7 @@ Agent 会自己完成：打开 Chrome → 导航到目标页面 → 读取页面
 |------|--------|------|
 | `HERMES_CHROME_AUTHORIZE` | 不设置 | 免命令授权（web-UI 等无命令行的环境用） |
 | `HERMES_CHROME_BRIDGE_HOST` | `127.0.0.1` | 桥接服务监听地址 |
-| `HERMES_CHROME_BRIDGE_PORT` | `17319` | 桥接服务端口 |
+| `HERMES_CHROME_BRIDGE_PORT` | `16319` | 桥接服务端口 |
 
 ### 配置文件（`~/.hermes/config.yaml`）
 
@@ -152,7 +152,7 @@ hermes_chrome_plugin:
   Hermes Agent                        Chrome 浏览器
   ┌─────────────────┐     HTTP        ┌──────────────────────┐
   │ hermes-chrome-  │◄───127.0.0.1───│ Hermes Chrome        │
-  │ plugin (Python) │    :17319       │ Connector (扩展)     │
+  │ plugin (Python) │    :16319       │ Connector (扩展)     │
   │                 │                 │  ├ service_worker.js │
   │ bridge.py       │                 │  └ snapshot_injected │
   │ tools.py        │                 │    .js (页面注入)    │

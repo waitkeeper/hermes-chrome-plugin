@@ -1,4 +1,4 @@
-const BRIDGE_URL = "http://127.0.0.1:17319";
+const BRIDGE_URL = "http://127.0.0.1:16319";
 const CLIENT_NAME = `Hermes Chrome Connector ${chrome.runtime.id}`;
 const POLL_ERROR_BACKOFF_MS = 2000;
 const DEFAULT_GROUP_COLOR = "blue";

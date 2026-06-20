@@ -42,7 +42,7 @@ from concurrent.futures import Future
 from concurrent.futures import TimeoutError as FuturesTimeout
 
 DEFAULT_HOST = os.environ.get("HERMES_CHROME_BRIDGE_HOST", "127.0.0.1")
-DEFAULT_PORT = int(os.environ.get("HERMES_CHROME_BRIDGE_PORT", "17319"))
+DEFAULT_PORT = int(os.environ.get("HERMES_CHROME_BRIDGE_PORT", "16319"))
 DEFAULT_TIMEOUT_MS = 30_000
 _NEXT_LONG_POLL_S = 25.0
 

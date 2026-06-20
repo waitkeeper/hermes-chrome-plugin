@@ -15,7 +15,7 @@
   ],
   "host_permissions": [
     "<all_urls>",
-    "http://127.0.0.1:17319/*"
+    "http://127.0.0.1:16319/*"
   ],
   "background": {
     "service_worker": "service_worker.js"
