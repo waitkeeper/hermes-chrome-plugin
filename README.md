@@ -29,6 +29,14 @@ Hermes ships with a `browser` toolset (`browser_navigate`, `browser_snapshot`, `
 
 Both can be enabled simultaneously. The Agent receives guidance on when to use each.
 
+**To use only `chrome_*` and disable built-in `browser_*`:**
+
+```bash
+hermes tools disable browser
+```
+
+Or inside a Hermes session: `/tools disable browser`. To restore: `hermes tools enable browser`.
+
 ## Installation
 
 ### 1. Install the Plugin

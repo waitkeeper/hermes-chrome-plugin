@@ -29,6 +29,14 @@ Hermes 自带 `browser` 工具集（`browser_navigate`、`browser_snapshot`、`b
 
 两者可以同时启用，Agent 会收到使用指引，自动选择合适的工具。
 
+**如果只想用 `chrome_*`，禁用内置 `browser_*`：**
+
+```bash
+hermes tools disable browser
+```
+
+或在 Hermes 对话中输入 `/tools disable browser`。恢复：`hermes tools enable browser`。
+
 ## 安装
 
 ### 1. 安装插件
