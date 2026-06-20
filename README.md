@@ -15,6 +15,20 @@ When you chat with Hermes, the Agent can directly control your Chrome just as yo
 
 > 💡 For simple page fetches that don't need authentication, use Hermes' built-in `web_search` / `web_fetch`. Need login state? Use `chrome_*`.
 
+### vs. Hermes Built-in Browser Tools
+
+Hermes ships with a `browser` toolset (`browser_navigate`, `browser_snapshot`, `browser_click`, etc.) that uses a headless/automated browser. This plugin adds `chrome_*` tools that drive your **real Chrome with your actual login sessions**.
+
+**No conflict — the Agent automatically picks the right one:**
+
+| Scenario | Tool Used |
+|----------|-----------|
+| Search the web, read a public blog post | `web_search` / `web_fetch` |
+| Interact with a public page (fill a form, click around) | `browser_*` |
+| Access Gmail, GitHub, internal dashboards, any page behind login | `chrome_*` |
+
+Both can be enabled simultaneously. The Agent receives guidance on when to use each.
+
 ## Installation
 
 ### 1. Install the Plugin

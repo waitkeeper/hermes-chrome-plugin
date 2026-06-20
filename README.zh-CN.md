@@ -15,6 +15,20 @@
 
 > 💡 不需要登录态的简单抓取，用 Hermes 内置的 `web_search` / `web_fetch` 更简单。需要登录态 = 用 `chrome_*`。
 
+### 和 Hermes 内置浏览器工具的区分
+
+Hermes 自带 `browser` 工具集（`browser_navigate`、`browser_snapshot`、`browser_click` 等），基于无头浏览器。本插件提供 `chrome_*` 工具，操控的是你**真实的 Chrome，带着你已有的登录态**。
+
+**不会冲突 — Agent 会自动判断用哪个：**
+
+| 场景 | 使用工具 |
+|------|---------|
+| 搜索网页、读取公开文章 | `web_search` / `web_fetch` |
+| 操作公开页面（填表单、点击按钮等） | `browser_*` |
+| 访问 Gmail、GitHub、公司后台等需要登录的页面 | `chrome_*` |
+
+两者可以同时启用，Agent 会收到使用指引，自动选择合适的工具。
+
 ## 安装
 
 ### 1. 安装插件
