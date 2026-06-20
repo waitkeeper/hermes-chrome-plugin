@@ -41,8 +41,8 @@ from urllib import request as urllib_request, error as urllib_error
 from concurrent.futures import Future
 from concurrent.futures import TimeoutError as FuturesTimeout
 
-DEFAULT_HOST = os.environ.get("PI_CHROME_BRIDGE_HOST", "127.0.0.1")
-DEFAULT_PORT = int(os.environ.get("PI_CHROME_BRIDGE_PORT", "17318"))
+DEFAULT_HOST = os.environ.get("HERMES_CHROME_BRIDGE_HOST", "127.0.0.1")
+DEFAULT_PORT = int(os.environ.get("HERMES_CHROME_BRIDGE_PORT", "17318"))
 DEFAULT_TIMEOUT_MS = 30_000
 _NEXT_LONG_POLL_S = 25.0
 
@@ -50,7 +50,7 @@ _EXTENSION_DIR = os.path.join(os.path.dirname(__file__), "chrome-extension")
 
 
 def read_extension_version() -> str:
-    """The version reported to the extension via ``x-pi-chrome-version``.
+    """The version reported to the extension via ``x-hermes-chrome-version``.
 
     Must equal the bundled extension's manifest version: the extension reloads
     itself only when the bridge advertises a *newer* version, so reporting the
@@ -63,7 +63,7 @@ def read_extension_version() -> str:
         return "0.0.0-dev"
 
 
-PI_CHROME_VERSION = read_extension_version()
+HERMES_CHROME_VERSION = read_extension_version()
 
 
 class BridgeError(RuntimeError):
@@ -135,7 +135,7 @@ class ChromeProfileBridge:
         self._httpd = httpd
         self._mode = "server"
         self._thread = threading.Thread(
-            target=httpd.serve_forever, name="pi-chrome-bridge", daemon=True
+            target=httpd.serve_forever, name="hermes-chrome-bridge", daemon=True
         )
         self._thread.start()
 
@@ -246,7 +246,7 @@ class ChromeProfileBridge:
                 payload = {}
             if exc.code == 404:
                 raise BridgeError(
-                    "A running session owns the Chrome bridge but is on an older pi-chrome "
+                    "A running session owns the Chrome bridge but is on an older hermes-chrome-plugin "
                     "without multi-session support. Restart that session, then retry."
                 )
             raise BridgeError(payload.get("error") or f"Chrome bridge owner HTTP {exc.code}")
@@ -312,7 +312,7 @@ def _cors_headers_for(headers) -> dict:
         "access-control-allow-origin": origin,
         "access-control-allow-methods": "GET,POST,OPTIONS",
         "access-control-allow-headers": "content-type",
-        "access-control-expose-headers": "x-pi-chrome-version",
+        "access-control-expose-headers": "x-hermes-chrome-version",
         "vary": "origin",
     }
 
@@ -411,8 +411,8 @@ class _Handler(BaseHTTPRequestHandler):
         qs = parse_qs(urlparse(self.path).query)
         self._bridge._mark_seen((qs.get("name") or [None])[0])
         command = self._bridge._take_next_command()
-        version = PI_CHROME_VERSION
-        headers = {**_cors_headers_for(self.headers), "x-pi-chrome-version": version}
+        version = HERMES_CHROME_VERSION
+        headers = {**_cors_headers_for(self.headers), "x-hermes-chrome-version": version}
         if command is not None:
             payload = {
                 "type": "command",

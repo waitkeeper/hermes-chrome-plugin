@@ -1,4 +1,4 @@
-"""Authorization gate for pi-chrome.
+"""Authorization gate for hermes-chrome-plugin.
 
 Chrome control is **locked by default**. The agent can never grant itself access —
 authorization is a human action (CLI: ``/chrome authorize``; web-ui: an explicit
@@ -6,7 +6,7 @@ UI button/confirm that calls this module). ``ChromeAuth`` is a pure state holder
 it records *until when* control is granted; the responsibility for obtaining human
 consent belongs to the caller.
 
-Two-layer gate (mirrors the original pi-chrome design):
+Two-layer gate (mirrors the original design):
   * visibility layer — ``is_authorized`` is used as each chrome_* tool's ``check_fn``
     so the tools do not even appear in the agent's context while locked.
   * runtime layer — ``require_authorized`` is called inside every tool handler

@@ -1,8 +1,8 @@
-"""pi-chrome plugin for Hermes — drive your real, signed-in Chrome profile.
+"""hermes-chrome-plugin for Hermes — drive your real, signed-in Chrome profile.
 
 Ported from the Pi extension at
 ``pi-chrome/extensions/chrome-profile-bridge/``. The Chrome companion extension
-(``chrome-extension/``) is reused verbatim; only the Pi-side (bridge, tools,
+(``chrome-extension/``) is reused verbatim; only the Hermes-side (bridge, tools,
 commands, formatters, auth) is reimplemented in Python here.
 
 Wiring (see plugin.yaml for the manifest):
@@ -13,8 +13,8 @@ Wiring (see plugin.yaml for the manifest):
   * primer  — pre_llm_call injects usage guidance (first turn, only once authorized).
   * cleanup — on_session_end stops the bridge.
 
-Module-name note: the plugin directory is ``pi-chrome`` (hyphenated, not a valid
-Python package name), so all intra-plugin imports are relative.
+Module-name note: the plugin directory is ``hermes-chrome-plugin`` (hyphenated,
+not a valid Python package name), so all intra-plugin imports are relative.
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ from .commands import register_all_commands
 from .tools import register_all_tools
 
 _CHROME_PRIMER = """\
-<chrome-profile-bridge>
+<hermes-chrome-plugin>
 Chrome control is available through the chrome_* tools via a companion Chrome extension running in the user's normal, signed-in Chrome profile (real cookies/sessions; no remote-debug port, no throwaway profile).
 
 When to use which:
@@ -49,13 +49,13 @@ def _apply_standing_grant(auth: ChromeAuth) -> None:
     """Honor an opt-in standing authorization from env or profile config."""
     import os
 
-    grant = (os.environ.get("PI_CHROME_AUTHORIZE") or "").strip()
+    grant = (os.environ.get("HERMES_CHROME_AUTHORIZE") or "").strip()
     if not grant:
         try:
             from hermes_cli.config import load_config
 
             cfg = load_config() or {}
-            grant = str(((cfg.get("pi_chrome") or {}).get("authorize")) or "").strip()
+            grant = str(((cfg.get("hermes_chrome_plugin") or {}).get("authorize")) or "").strip()
         except Exception:
             grant = ""
     if grant:
@@ -71,8 +71,8 @@ def register(ctx) -> None:
     # skill commands, never plugin commands — have no way to run /chrome authorize.
     # For those, the user grants control out-of-band by setting it in their own
     # profile (which IS the human consent): either
-    #   * env var  PI_CHROME_AUTHORIZE=indefinite|30m|45 , or
-    #   * config.yaml:  pi_chrome:\n    authorize: indefinite
+    #   * env var  HERMES_CHROME_AUTHORIZE=indefinite|30m|45 , or
+    #   * config.yaml:  hermes_chrome_plugin:\n    authorize: indefinite
     # Default (unset) keeps Chrome control LOCKED — the security model is unchanged
     # unless the operator explicitly opts in.
     _apply_standing_grant(auth)

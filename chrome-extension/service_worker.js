@@ -186,7 +186,7 @@ if (chrome.debugger && chrome.debugger.onDetach) {
   chrome.debugger.onDetach.addListener(({ tabId }, reason) => {
     if (tabId !== undefined) attachedTabs.delete(tabId);
     if (reason === "canceled_by_user") {
-      console.warn(`[pi-chrome] debugger canceled by user on tab ${tabId}; Chrome input will reattach on next call`);
+      console.warn(`[hermes-chrome-plugin] debugger canceled by user on tab ${tabId}; Chrome input will reattach on next call`);
     }
   });
 }
@@ -853,10 +853,10 @@ async function pollLoop() {
         cache: "no-store",
       });
       if (!response.ok) throw new Error(`bridge /next HTTP ${response.status}`);
-      const expected = response.headers.get("x-pi-chrome-version");
+      const expected = response.headers.get("x-hermes-chrome-version");
       const ours = chrome.runtime.getManifest().version;
       if (expected && expected !== ours && isVersionOlder(ours, expected)) {
-        console.warn(`[pi-chrome] extension v${ours} behind pi-chrome v${expected}; reloading extension`);
+        console.warn(`[hermes-chrome-plugin] extension v${ours} behind hermes-chrome-plugin v${expected}; reloading extension`);
         try { chrome.runtime.reload(); } catch {}
         return;
       }

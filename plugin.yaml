@@ -1,4 +1,4 @@
-name: pi-chrome
+name: hermes-chrome-plugin
 version: "0.15.38"
 description: >-
   Use your existing signed-in Chrome profile with Hermes. Drives the real Chrome

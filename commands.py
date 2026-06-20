@@ -13,10 +13,10 @@ from __future__ import annotations
 import os
 
 from .auth import ChromeAuth
-from .bridge import ChromeProfileBridge, BridgeError, PI_CHROME_VERSION
+from .bridge import ChromeProfileBridge, BridgeError, HERMES_CHROME_VERSION
 
 _HELP = """\
-/chrome — control the pi-chrome bridge
+/chrome — control the hermes-chrome-plugin bridge
 
   /chrome authorize [15m|30m|<minutes>|indefinite]  Allow this session to use chrome_* tools.
   /chrome revoke                                     Lock Chrome control.
@@ -26,8 +26,8 @@ _HELP = """\
   /chrome background [on|off|toggle|status]          Whether chrome_* runs without focusing Chrome."""
 
 _BACKGROUND_DESC = {
-    "on": "pi-chrome runs in the background; Chrome won't pop up or steal focus.",
-    "off": "Chrome pops to the front and switches tabs so you can watch what pi-chrome is doing.",
+    "on": "hermes-chrome-plugin runs in the background; Chrome won't pop up or steal focus.",
+    "off": "Chrome pops to the front and switches tabs so you can watch what hermes-chrome-plugin is doing.",
 }
 
 
@@ -45,8 +45,8 @@ def _status_summary(bridge: ChromeProfileBridge, auth: ChromeAuth) -> str:
     try:
         version = bridge.send("tab.version", {}, 5_000) or {}
         ext_version = version.get("extensionVersion")
-        if ext_version and ext_version != PI_CHROME_VERSION:
-            parts.append(f"⚠ Chrome extension v{ext_version} (pi-chrome v{PI_CHROME_VERSION}, reload extension)")
+        if ext_version and ext_version != HERMES_CHROME_VERSION:
+            parts.append(f"⚠ Chrome extension v{ext_version} (hermes-chrome-plugin v{HERMES_CHROME_VERSION}, reload extension)")
         else:
             parts.append("✓ Chrome connected")
     except BridgeError:
@@ -57,7 +57,7 @@ def _status_summary(bridge: ChromeProfileBridge, auth: ChromeAuth) -> str:
 
 
 def _doctor(bridge: ChromeProfileBridge) -> str:
-    lines = [f"pi-chrome v{PI_CHROME_VERSION}"]
+    lines = [f"hermes-chrome-plugin v{HERMES_CHROME_VERSION}"]
     status = bridge.status()
     role = "sharing another session's connection" if status.get("mode") == "client" else "running the Chrome connection for this machine"
     lines.append(f"• This session is {role}.")
@@ -72,10 +72,10 @@ def _doctor(bridge: ChromeProfileBridge) -> str:
         latency_ms = round((_time.time() - started) * 1000)
         extension_alive = True
         ext_version = version.get("extensionVersion")
-        if ext_version and ext_version != PI_CHROME_VERSION:
+        if ext_version and ext_version != HERMES_CHROME_VERSION:
             version_mismatch = True
             lines += [
-                f"✗ The Chrome companion extension is on an old version ({ext_version}); this pi-chrome is {PI_CHROME_VERSION}.",
+                f"✗ The Chrome companion extension is on an old version ({ext_version}); this hermes-chrome-plugin is {HERMES_CHROME_VERSION}.",
                 "  Fix: open chrome://extensions and click the refresh icon on 'Hermes Chrome Connector'.",
             ]
         else:
@@ -88,15 +88,15 @@ def _doctor(bridge: ChromeProfileBridge) -> str:
         try:
             value = bridge.send("page.evaluate", {"expression": "1+1", "awaitPromise": True, "foreground": False}, 10_000)
             if value == 2:
-                lines.append("✓ pi-chrome can run code in the active Chrome tab.")
+                lines.append("✓ hermes-chrome-plugin can run code in the active Chrome tab.")
             else:
-                lines.append(f"⚠ pi-chrome ran code but got an unexpected result ({value}). The current tab may be a Chrome internal page or a strict site.")
+                lines.append(f"⚠ hermes-chrome-plugin ran code but got an unexpected result ({value}). The current tab may be a Chrome internal page or a strict site.")
         except BridgeError as exc:
-            lines.append(f"✗ pi-chrome can't run code in the active tab: {exc}")
+            lines.append(f"✗ hermes-chrome-plugin can't run code in the active tab: {exc}")
         try:
             probe = bridge.send("page.probe", {"foreground": False}, 10_000) or {}
             if probe.get("arithmetic") == 2:
-                lines.append(f"✓ The active tab is {_hostname(str(probe.get('location')))} and accepts pi-chrome's commands.")
+                lines.append(f"✓ The active tab is {_hostname(str(probe.get('location')))} and accepts hermes-chrome-plugin's commands.")
             if probe.get("webdriver"):
                 lines.append("⚠ Your Chrome is reporting itself as automated to websites. Some sites use this signal to block sign-ins.")
         except BridgeError as exc:
@@ -110,7 +110,7 @@ def _doctor(bridge: ChromeProfileBridge) -> str:
 def _onboard() -> str:
     ext_path = os.path.join(os.path.dirname(__file__), "chrome-extension")
     return (
-        "Install the pi-chrome companion extension in your normal Chrome profile:\n"
+        "Install the hermes-chrome-plugin companion extension in your normal Chrome profile:\n"
         "  1. Open chrome://extensions\n"
         "  2. Turn on 'Developer mode' (top-right).\n"
         "  3. Click 'Load unpacked' and choose this folder:\n"
@@ -162,6 +162,6 @@ def register_all_commands(ctx, bridge: ChromeProfileBridge, auth: ChromeAuth) ->
     ctx.register_command(
         "chrome",
         handler=handler,
-        description="Control the pi-chrome bridge (authorize/revoke/status/doctor/onboard/background).",
+        description="Control the hermes-chrome-plugin bridge (authorize/revoke/status/doctor/onboard/background).",
         args_hint="authorize|revoke|status|doctor|onboard|background",
     )

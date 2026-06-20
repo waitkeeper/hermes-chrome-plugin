@@ -110,7 +110,7 @@ def register_all_tools(ctx, bridge: ChromeProfileBridge, auth: ChromeAuth) -> No
     def add(name: str, description: str, properties: dict, handler: Callable[[dict], str], *, required: list | None = None, emoji: str = "🌐") -> None:
         ctx.register_tool(
             name=name,
-            toolset="pi-chrome",
+            toolset="hermes-chrome-plugin",
             schema={"type": "object", "properties": properties, "required": required or []},
             handler=_guard(handler),
             check_fn=auth.is_authorized,

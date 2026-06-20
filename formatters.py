@@ -1,5 +1,5 @@
 """Snapshot/inspect/result formatting — Python port of the TS formatters in
-``pi-chrome/extensions/chrome-profile-bridge/index.ts``.
+``hermes-chrome-plugin/chrome-extension/`` (originally from pi-chrome).
 
 These turn the raw JSON produced by the in-page ``snapshot_injected.js`` into the
 concise, agent-friendly text the model reads. The field shapes are owned by the
