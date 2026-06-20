@@ -1,0 +1,37 @@
+name: pi-chrome
+version: "0.15.38"
+description: >-
+  Use your existing signed-in Chrome profile with Hermes. Drives the real Chrome
+  you already use (cookies, sessions, extensions) through a companion Chrome
+  extension over a loopback-only bridge. Provides 21 chrome_* tools for tab
+  management, page inspection (accessibility snapshot with stable uids),
+  navigation, interaction (click/type/fill/key/hover/drag/scroll/tap), file
+  upload, screenshots, and console/network observation. Chrome control is
+  locked by default and must be unlocked with /chrome authorize.
+author: Earendil Works (ported to Hermes)
+kind: standalone
+provides_tools:
+  - chrome_launch
+  - chrome_tab
+  - chrome_snapshot
+  - chrome_find
+  - chrome_inspect
+  - chrome_navigate
+  - chrome_evaluate
+  - chrome_click
+  - chrome_type
+  - chrome_fill
+  - chrome_key
+  - chrome_wait_for
+  - chrome_hover
+  - chrome_drag
+  - chrome_tap
+  - chrome_scroll
+  - chrome_upload_file
+  - chrome_screenshot
+  - chrome_list_console_messages
+  - chrome_list_network_requests
+  - chrome_get_network_request
+provides_hooks:
+  - pre_llm_call
+  - on_session_end

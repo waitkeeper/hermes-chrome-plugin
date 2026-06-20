@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Hermes Chrome Connector",
+  "version": "0.15.38",
+  "description": "Lets Hermes control tabs in Chrome via a local connector at 127.0.0.1.",
+  "permissions": [
+    "tabs",
+    "tabGroups",
+    "scripting",
+    "storage",
+    "activeTab",
+    "alarms",
+    "webNavigation",
+    "debugger"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "http://127.0.0.1:17318/*"
+  ],
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "action": {
+    "default_title": "Hermes Chrome Connector"
+  }
+}
