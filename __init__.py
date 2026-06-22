@@ -11,13 +11,15 @@ Wiring (see plugin.yaml for the manifest):
   * tools   — 21 chrome_* tools.
   * command — /chrome authorize|revoke|status|doctor|onboard|background.
   * primer  — pre_llm_call injects usage guidance (first turn, only once authorized).
-  * cleanup — on_session_end stops the bridge.
+  * cleanup — process exit stops the bridge.
 
 Module-name note: the plugin directory is ``hermes-chrome-plugin`` (hyphenated,
 not a valid Python package name), so all intra-plugin imports are relative.
 """
 
 from __future__ import annotations
+
+import atexit
 
 from .auth import ChromeAuth
 from .bridge import ChromeProfileBridge
@@ -92,8 +94,7 @@ def register(ctx) -> None:
 
     ctx.register_hook("pre_llm_call", _inject_primer)
 
-    # Cleanup: stop the bridge server when the session ends.
-    def _on_session_end(**_kw):
-        bridge.stop()
-
-    ctx.register_hook("on_session_end", _on_session_end)
+    # Cleanup: stop the bridge when the owning Python process exits. Do not tie
+    # this to on_session_end; Hermes fires that hook after every conversation
+    # turn, so one chat session could stop another session's active bridge.
+    atexit.register(bridge.stop)

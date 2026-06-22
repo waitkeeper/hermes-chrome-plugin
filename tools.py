@@ -140,7 +140,7 @@ def register_all_tools(ctx, bridge: ChromeProfileBridge, auth: ChromeAuth) -> No
         "Start/check the local bridge used by the companion Chrome extension. Does not launch a separate Chrome profile; load the unpacked chrome-extension folder in your existing Chrome to connect.",
         {
             "url": {"type": "string", "description": "Optional URL to open after the extension is connected."},
-            "port": {"type": "number", "description": "Ignored. The bundled extension polls 127.0.0.1:17318."},
+            "port": {"type": "number", "description": "Ignored. The bundled extension polls 127.0.0.1:16319."},
             "userDataDir": {"type": "string", "description": "Ignored."},
             "useDefaultProfile": {"type": "boolean", "description": "Ignored."},
             "headless": {"type": "boolean", "description": "Ignored."},

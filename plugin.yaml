@@ -34,4 +34,3 @@ provides_tools:
   - chrome_get_network_request
 provides_hooks:
   - pre_llm_call
-  - on_session_end
