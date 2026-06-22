@@ -2,13 +2,17 @@
   "manifest_version": 3,
   "name": "Hermes Chrome Connector",
   "version": "0.15.38",
-  "description": "Lets Hermes control tabs in Chrome via a local connector at 127.0.0.1.",
+  "description": "Companion extension for Hermes Agent that enables local browser automation through 127.0.0.1.",
+  "minimum_chrome_version": "110",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "permissions": [
     "tabs",
     "tabGroups",
     "scripting",
-    "storage",
-    "activeTab",
     "alarms",
     "webNavigation",
     "debugger"
@@ -21,6 +25,11 @@
     "service_worker": "service_worker.js"
   },
   "action": {
-    "default_title": "Hermes Chrome Connector"
+    "default_title": "Hermes Chrome Connector",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
   }
 }
