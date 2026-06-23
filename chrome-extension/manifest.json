@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Hermes Chrome Connector",
   "version": "0.15.38",
-  "description": "Companion extension for Hermes Agent that enables local browser automation through 127.0.0.1.",
+  "description": "Control Chrome with Hermes through a local companion extension.",
   "minimum_chrome_version": "110",
   "icons": {
     "16": "icons/icon16.png",
