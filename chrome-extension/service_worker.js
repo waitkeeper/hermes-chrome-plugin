@@ -2,7 +2,7 @@ const BRIDGE_URL = "http://127.0.0.1:16319";
 const CLIENT_NAME = `Hermes Chrome Connector ${chrome.runtime.id}`;
 const POLL_ERROR_BACKOFF_MS = 2000;
 const DEFAULT_GROUP_COLOR = "blue";
-const PI_GROUP_RE = /^Pi(\b|\s*-)/i;
+const HERMES_GROUP_RE = /^(Hermes|Pi)(\b|\s*-)/i;
 const VALID_GROUP_COLORS = new Set(["grey", "blue", "red", "yellow", "green", "pink", "purple", "cyan", "orange"]);
 const COMMAND_TIMEOUT_MS = 25_000;
 const CDP_COMMAND_TIMEOUT_MS = 5_000;
@@ -281,7 +281,7 @@ async function cdp(tabId, method, params) {
           const id = extractForeignExtId(after) || extractForeignExtId(before) || "unknown";
           throw new Error(
             `Another Chrome extension (${id}) has an input overlay on this page (e.g. a password manager / autofill popup). \n` +
-            `pi-chrome tried to dismiss it with Escape but it reappeared. Disable that extension on this page, close its popup, or focus the field via Tab instead of clicking.`,
+            `Hermes Chrome Connector tried to dismiss it with Escape but it reappeared. Disable that extension on this page, close its popup, or focus the field via Tab instead of clicking.`,
           );
         }
         throw retryErr;
@@ -813,13 +813,17 @@ async function chromeInputUpload(params) {
 // ===============================================================
 
 
+function configureActionBadge() {
+  chrome.action.setBadgeText({ text: "H" });
+  chrome.action.setBadgeBackgroundColor({ color: "#004245" });
+}
+
 function armKeepaliveAlarm() {
-  chrome.alarms.create("pi-bridge-keepalive", { periodInMinutes: 0.5 });
+  configureActionBadge();
+  chrome.alarms.create("hermes-bridge-keepalive", { periodInMinutes: 0.5 });
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.action.setBadgeText({ text: "pi" });
-  chrome.action.setBadgeBackgroundColor({ color: "#4f46e5" });
   armKeepaliveAlarm();
   void pollLoop();
 });
@@ -830,7 +834,7 @@ chrome.runtime.onStartup.addListener(() => {
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "pi-bridge-keepalive") void pollLoop();
+  if (alarm.name === "hermes-bridge-keepalive" || alarm.name === "pi-bridge-keepalive") void pollLoop();
 });
 
 chrome.action.onClicked.addListener(() => {
@@ -905,8 +909,8 @@ function isVersionOlder(a, b) {
 }
 
 function cleanGroupTitle(value) {
-  const text = String(value || "Pi").replace(/\s+/g, " ").trim().slice(0, 80);
-  return text || "Pi";
+  const text = String(value || "Hermes").replace(/\s+/g, " ").trim().slice(0, 80);
+  return text || "Hermes";
 }
 
 function cleanGroupColor(value) {
@@ -924,12 +928,12 @@ async function groupRecord(groupId) {
     color: group.color || "",
     collapsed: Boolean(group.collapsed),
     windowId: group.windowId,
-    piGroup: Boolean(group.title && PI_GROUP_RE.test(group.title)),
+    hermesGroup: Boolean(group.title && HERMES_GROUP_RE.test(group.title)),
   };
 }
 
 // Find an existing tab group in `windowId` whose title matches `title` (case-insensitive).
-// Used so all Pi-opened tabs collect into one group per window instead of spawning new ones.
+// Used so all Hermes-opened tabs collect into one group per window instead of spawning new ones.
 async function findGroupByTitle(windowId, title) {
   if (!chrome.tabGroups) return null;
   const wanted = cleanGroupTitle(title).toLowerCase();
@@ -971,10 +975,10 @@ async function dispatch(action, params) {
     }
     case "tab.new": {
       const tab = await chrome.tabs.create({ url: params.url || "about:blank", active: true });
-      // Every Pi-opened tab joins a group by default. Pass groupTitle:"" (or group:false) to opt out.
+      // Every Hermes-opened tab joins a group by default. Pass groupTitle:"" (or group:false) to opt out.
       const optOut = params.groupTitle === "" || params.group === false;
       if (optOut && !params.groupColor) return formatTab(tab);
-      return groupTab(tab, params.groupTitle || "Pi", params.groupColor);
+      return groupTab(tab, params.groupTitle || "Hermes", params.groupColor);
     }
     case "tab.activate": {
       const tab = await getTabByParams(params);
@@ -983,7 +987,7 @@ async function dispatch(action, params) {
     }
     case "tab.group": {
       const tab = await getTabByParams(params);
-      return groupTab(tab, params.groupTitle || "Pi", params.groupColor);
+      return groupTab(tab, params.groupTitle || "Hermes", params.groupColor);
     }
     case "tab.ungroup": {
       const tab = await getTabByParams(params);
@@ -1127,9 +1131,9 @@ async function getTabByParams(params) {
   if (url.startsWith("chrome://") || url.startsWith("chrome-extension://") || url.startsWith("devtools://")) {
     throw new Error(`Chrome blocks extension automation on protected URL: tab=${tab.id} url=${url}`);
   }
-  // Tabs Pi interacts with (page.* actions) join this session's group so the user can see exactly
-  // which tabs Pi is driving. We only adopt *ungrouped* tabs — never hijack a tab the user (or
-  // another Pi session) already grouped, since groupTab would otherwise rename that group.
+  // Tabs Hermes interacts with (page.* actions) join this session's group so the user can see exactly
+  // which tabs Hermes is driving. We only adopt *ungrouped* tabs — never hijack a tab the user (or
+  // another Hermes session) already grouped, since groupTab would otherwise rename that group.
   if (params.joinSessionGroup && params.sessionGroupTitle) {
     await joinSessionGroup(tab, params.sessionGroupTitle);
   }
